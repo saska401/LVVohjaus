@@ -1,0 +1,44 @@
+import minimalmodbus
+import serial
+import time
+
+PORT = '/dev/ttyUSB0'
+
+def scan():
+    for slave_id in range(1, 10):  # keep small first (1–10)
+        try:
+            instrument = minimalmodbus.Instrument(PORT, slave_id)
+            instrument.serial.baudrate = 9600
+            instrument.serial.bytesize = 8
+            instrument.serial.parity = serial.PARITY_EVEN   # ABB needs this
+            instrument.serial.stopbits = 1
+            instrument.serial.timeout = 0.3
+            instrument.mode = minimalmodbus.MODE_RTU
+
+            print(f"\n--- Testing slave ID {slave_id} ---")
+
+            # Try a small block read (safe test)
+            for fc in [3, 4]:
+                try:
+                    regs = instrument.read_registers(0, 2, functioncode=fc)
+                    print(f"[ID {slave_id}] FC{fc} registers 0-1: {regs}")
+                except Exception as e:
+                    pass
+
+            # Try float reads around your target area
+            for addr in range(90, 110):
+                for fc in [3, 4]:
+                    try:
+                        val = instrument.read_float(addr, functioncode=fc)
+                        print(f"[ID {slave_id}] FC{fc} FLOAT @ {addr}: {val}")
+                    except:
+                        pass
+
+        except Exception as e:
+            pass
+
+        time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    scan()
