@@ -1,27 +1,44 @@
 import requests
 import datetime
 import time
-#import gpiozero
+import gpiozero
+import minimalmodbus
 
-#LVV = gpiozero.LED(23)   # GPIO23 ohjaa LVV:tä
-# What flows to/from the grid (positive = exporting, negative = importing)
-#verkko = tuotanto - kulutus
+EM_340 = 2         # Modbus-laitteen osoite (0-247) – tarkista laitteestasi
+LVV = gpiozero.LED(23)   # GPIO23 ohjaa LVV:tä
 
-# Paneelien_ylituotto = how much surplus solar you have available
-# Only positive when panels produce more than the house needs
-#paneelien_ylituotto = max(0, tuotanto - kulutus)
+CG340 = minimalmodbus.Instrument('/dev/ttyUSB0', EM_340)  # portti ja osoite
+
+CG340.serial.baudrate = 9600                                    #Luettavan laitteen tarvittavat sarjaporttiasetukset
+CG340.serial.bytesize = 8
+CG340.serial.parity   = minimalmodbus.serial.PARITY_NONE
+CG340.serial.stopbits = 1
+CG340.serial.timeout  = 0.5
+CG340.mode = minimalmodbus.MODE_RTU
+
+CG340.clear_buffers_before_each_transaction = True
+CG340.close_port_after_each_call = True
+
+
 
 # kokonaiskulutus = total house consumption
 #kokonaiskulutus = kulutus
 
-#def kulutus():
-    #kirjoita tähän koodi, joka hakee talon kokonaiskulutuksen (W)
+def kulutus():
+    try:
+        return CG340.read_register(0, 0, 3) * 10
+    except Exception as e:
+        print(f"Virhe kulutuksen luvussa: {e}")
+        return None
 
-#def tuotanto():
-    #kirjoita tähän koodi, joka hakee paneelien tuotannon (W)
+def tuotanto():
+    try:
+        return CG340.read_register(1, 0, 3) * -1  #address, decimals, functioncode (40, 1 , 3, False)
+    except Exception as e:
+        print(f"Virhe ylituoton luvussa: {e}")
+        return None
 
-#def paneelien_ylituotto(tuotanto, kulutus):
-    #return max(0, tuotanto - kulutus)
+
 
 
 def hae_nykyinen_sahkonhinta():
@@ -83,16 +100,21 @@ def ohjaa_lvv(current_price, paneelien_ylituotto, kokonaiskulutus, lvv_paalla):
 
 # Alkutieto LVV:n tilasta
 lvv_paalla = False
-#LVV.off()
+LVV.off()
 
 while True:
-    # TESTIMUUTTUJAT
-    paneelien_ylituotto = 400   # W
-    kokonaiskulutus = 14000          # tarkista myöhemmin oikea yksikkö mittauksesta
+    
 
     #kokonaiskulutus = kulutus()
+    kokonaiskulutus = kulutus()
+    paneelien_ylituotto = tuotanto()
     current_price = hae_nykyinen_sahkonhinta()
-
+    
+    if kokonaiskulutus is None or paneelien_ylituotto is None:
+        print("Modbus read failed, trying again in 5 seconds...")
+        time.sleep(5)
+        continue
+    
     if current_price is not None:
         uusi_tila = ohjaa_lvv(
             current_price=current_price,
@@ -104,10 +126,10 @@ while True:
         # Ohjataan GPIO vain jos tila muuttuu
         if uusi_tila != lvv_paalla:
             if uusi_tila:
-                #LVV.on()
+                LVV.on()
                 print("LVV kytketty päälle")
             else:
-                #LVV.off()
+                LVV.off()
                 print("LVV kytketty pois päältä")
 
         lvv_paalla = uusi_tila
