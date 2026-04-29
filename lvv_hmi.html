@@ -69,7 +69,6 @@
     letter-spacing: 1px;
   }
 
-  /* Connection badge */
   #connBadge {
     font-family: var(--mono);
     font-size: 10px;
@@ -168,51 +167,60 @@
   .logic-label { color: var(--muted); flex: 1; }
   .logic-label.active { color: var(--text); }
 
-  /* Controls */
-  .controls-card { grid-column: 3 / 4; grid-row: 1 / 3; }
+  /* Live readings card — replaces controls */
+  .readings-card { grid-column: 3 / 4; grid-row: 1 / 3; }
 
-  .slider-group { margin-bottom: 24px; }
-  .slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-  .slider-name  { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-  .slider-val   { font-family: var(--mono); font-size: 16px; color: var(--accent); }
-  .slider-val span { font-size: 11px; color: var(--muted); }
-
-  input[type=range] {
-    -webkit-appearance: none; width: 100%; height: 4px;
-    background: var(--border); border-radius: 2px; outline: none; cursor: pointer; margin-bottom: 6px;
+  .reading-block {
+    margin-bottom: 28px;
   }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-    background: var(--accent); box-shadow: 0 0 8px rgba(0,212,170,0.5); cursor: pointer; transition: transform 0.15s;
+
+  .reading-block:last-child { margin-bottom: 0; }
+
+  .reading-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
   }
-  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 
-  .slider-ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--muted); padding: 0 2px; }
-
-  .number-input-row { display: flex; gap: 8px; margin-top: 8px; }
-  .number-input-row input[type=number] {
-    flex: 1; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 3px; color: var(--accent); font-family: var(--mono);
-    font-size: 14px; padding: 6px 10px; outline: none; transition: border-color 0.2s;
+  .reading-value {
+    font-family: var(--mono);
+    font-size: 38px;
+    line-height: 1;
+    color: #fff;
+    transition: color 0.4s;
   }
-  .number-input-row input[type=number]:focus { border-color: var(--accent); }
 
-  .btn-set {
-    background: transparent; border: 1px solid var(--accent); color: var(--accent);
-    font-family: var(--ui); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    padding: 6px 14px; border-radius: 3px; cursor: pointer; transition: background 0.2s, color 0.2s;
+  .reading-unit {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 3px;
   }
-  .btn-set:hover { background: var(--accent); color: #000; }
-  .btn-set:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  /* Gauges */
-  .metric-card { }
-  .gauge-wrap { display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; }
-  .gauge-col  { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .gauge-bar-bg   { width: 32px; height: 80px; background: var(--border); border-radius: 3px; overflow: hidden; display: flex; align-items: flex-end; }
-  .gauge-bar-fill { width: 100%; border-radius: 3px; transition: height 0.6s ease, background 0.5s; }
-  .gauge-col-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-align: center; }
-  .gauge-val { font-family: var(--mono); font-size: 10px; color: var(--text); }
+  .reading-bar {
+    margin-top: 10px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .reading-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease, background 0.5s;
+  }
+
+  .reading-source {
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
 
   /* Safety */
   .safety-banner {
@@ -223,6 +231,15 @@
   }
   .safety-banner.show { display: block; }
   @keyframes blink { 50% { opacity: 0.5; } }
+
+  /* Gauges */
+  .metric-card { }
+  .gauge-wrap { display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; }
+  .gauge-col  { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .gauge-bar-bg   { width: 32px; height: 80px; background: var(--border); border-radius: 3px; overflow: hidden; display: flex; align-items: flex-end; }
+  .gauge-bar-fill { width: 100%; border-radius: 3px; transition: height 0.6s ease, background 0.5s; }
+  .gauge-col-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-align: center; }
+  .gauge-val { font-family: var(--mono); font-size: 10px; color: var(--text); }
 
   /* Log */
   .log-area {
@@ -238,12 +255,11 @@
   .log-line .msg.error { color: var(--danger); }
   @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 
-  /* Last update */
   .last-update { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 6px; }
 
   @media (max-width: 700px) {
     .grid { grid-template-columns: 1fr 1fr; }
-    .controls-card { grid-column: 1 / 3; grid-row: 3 / 4; }
+    .readings-card { grid-column: 1 / 3; grid-row: 3 / 4; }
   }
 </style>
 </head>
@@ -283,34 +299,30 @@
     <div class="last-update">Hinta päivitetty: <span id="lastUpdate">—</span></div>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="card controls-card">
-    <div class="card-label">Asetukset</div>
+  <!-- LIVE READINGS -->
+  <div class="card readings-card">
+    <div class="card-label">Reaaliaikaiset mittaukset</div>
 
-    <div class="slider-group" style="margin-top:14px">
-      <div class="slider-header">
-        <span class="slider-name">Paneelien ylituotto</span>
-        <span class="slider-val" id="solarVal">— <span>W</span></span>
+    <!-- Solar surplus -->
+    <div class="reading-block" style="margin-top:14px">
+      <div class="reading-label">Paneelien ylituotto</div>
+      <div class="reading-value" id="solarVal">—</div>
+      <div class="reading-unit">W</div>
+      <div class="reading-bar">
+        <div class="reading-bar-fill" id="solarBar" style="width:0%"></div>
       </div>
-      <input type="range" id="solarSlider" min="0" max="10000" step="100" value="1000" oninput="onSolarSlide(this.value)">
-      <div class="slider-ticks"><span>0</span><span>2.5k</span><span>5k</span><span>7.5k</span><span>10k</span></div>
-      <div class="number-input-row">
-        <input type="number" id="solarInput" value="1000" min="0" max="10000" step="100">
-        <button class="btn-set" id="btnSolar" onclick="sendValue('paneelien_ylituotto', 'solarInput')">Aseta</button>
-      </div>
+      <div class="reading-source">● MODBUS LIVE</div>
     </div>
 
-    <div class="slider-group">
-      <div class="slider-header">
-        <span class="slider-name">Kokonaiskulutus</span>
-        <span class="slider-val" id="loadVal">— <span>W</span></span>
+    <!-- Total consumption -->
+    <div class="reading-block">
+      <div class="reading-label">Kokonaiskulutus</div>
+      <div class="reading-value" id="loadVal">—</div>
+      <div class="reading-unit">W</div>
+      <div class="reading-bar">
+        <div class="reading-bar-fill" id="loadBar" style="width:0%"></div>
       </div>
-      <input type="range" id="loadSlider" min="0" max="25000" step="100" value="17000" oninput="onLoadSlide(this.value)">
-      <div class="slider-ticks"><span>0</span><span>6k</span><span>12k</span><span>18k</span><span>25k</span></div>
-      <div class="number-input-row">
-        <input type="number" id="loadInput" value="17000" min="0" max="25000" step="100">
-        <button class="btn-set" id="btnLoad" onclick="sendValue('kokonaiskulutus', 'loadInput')">Aseta</button>
-      </div>
+      <div class="reading-source">● MODBUS LIVE</div>
     </div>
 
     <div id="safetyBanner" class="safety-banner">⚠ TURVAEHTO LAUENNUT – KULUTUS ≥ 16 kW</div>
@@ -333,17 +345,12 @@
 <div class="log-area" id="logArea"></div>
 
 <script>
-// ── Local display state ───────────────────────────────────────
 let ui = {
   paneelien_ylituotto: null,
   kokonaiskulutus: null,
   current_price: null,
   lvv_paalla: false,
 };
-
-let pendingSliderSolar = null;
-let pendingSliderLoad  = null;
-let connected = false;
 
 // ── Clock ─────────────────────────────────────────────────────
 setInterval(() => {
@@ -353,12 +360,9 @@ setInterval(() => {
 
 // ── Connection badge ──────────────────────────────────────────
 function setConnected(ok) {
-  connected = ok;
   const badge = document.getElementById('connBadge');
   badge.textContent = ok ? '● ONLINE' : '● OFFLINE';
   badge.className   = ok ? 'online'   : 'offline';
-  ['btnSolar','btnLoad'].forEach(id =>
-    document.getElementById(id).disabled = !ok);
 }
 
 // ── Fetch state from backend ──────────────────────────────────
@@ -375,22 +379,10 @@ async function pollState() {
 }
 
 function applyServerState(data) {
-  // Only sync sliders if the user isn't actively dragging
-  if (pendingSliderSolar === null) {
-    ui.paneelien_ylituotto = data.paneelien_ylituotto;
-    document.getElementById('solarSlider').value = data.paneelien_ylituotto;
-    document.getElementById('solarInput').value  = data.paneelien_ylituotto;
-    document.getElementById('solarVal').innerHTML = `${data.paneelien_ylituotto} <span>W</span>`;
-  }
-  if (pendingSliderLoad === null) {
-    ui.kokonaiskulutus = data.kokonaiskulutus;
-    document.getElementById('loadSlider').value = data.kokonaiskulutus;
-    document.getElementById('loadInput').value  = data.kokonaiskulutus;
-    document.getElementById('loadVal').innerHTML = `${data.kokonaiskulutus} <span>W</span>`;
-  }
-
-  ui.current_price = data.current_price;
-  ui.lvv_paalla    = data.lvv_paalla;
+  ui.paneelien_ylituotto = data.paneelien_ylituotto;
+  ui.kokonaiskulutus     = data.kokonaiskulutus;
+  ui.current_price       = data.current_price;
+  ui.lvv_paalla          = data.lvv_paalla;
 
   if (data.last_price_update)
     document.getElementById('lastUpdate').textContent = data.last_price_update;
@@ -408,55 +400,14 @@ function applyServerState(data) {
   renderUI();
 }
 
-// ── Send updated value to backend ─────────────────────────────
-async function sendValue(key, inputId) {
-  const val = parseInt(document.getElementById(inputId).value, 10);
-  if (isNaN(val)) return;
-  try {
-    const r = await fetch('/api/set', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({[key]: val}),
-    });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    // Immediately reflect locally
-    if (key === 'paneelien_ylituotto') {
-      ui.paneelien_ylituotto = val;
-      pendingSliderSolar = null;
-    } else {
-      ui.kokonaiskulutus = val;
-      pendingSliderLoad = null;
-    }
-    renderUI();
-  } catch (e) {
-    setConnected(false);
-  }
-}
-
-// ── Slider drag handlers ──────────────────────────────────────
-function onSolarSlide(v) {
-  pendingSliderSolar = +v;
-  document.getElementById('solarVal').innerHTML = `${v} <span>W</span>`;
-  document.getElementById('solarInput').value = v;
-  ui.paneelien_ylituotto = +v;
-  renderUI();
-}
-function onLoadSlide(v) {
-  pendingSliderLoad = +v;
-  document.getElementById('loadVal').innerHTML = `${v} <span>W</span>`;
-  document.getElementById('loadInput').value = v;
-  ui.kokonaiskulutus = +v;
-  renderUI();
-}
-
 // ── Render ────────────────────────────────────────────────────
 function renderUI() {
   const { paneelien_ylituotto: yli, kokonaiskulutus: kul,
           current_price: price, lvv_paalla: on } = ui;
 
-  // Safety
+  // Safety banner
   const safety_ok = kul !== null && kul < 16000;
-  document.getElementById('safetyBanner').classList.toggle('show', kul >= 16000);
+  document.getElementById('safetyBanner').classList.toggle('show', kul !== null && kul >= 16000);
 
   // Status ring
   document.getElementById('statusRing').classList.toggle('on', on);
@@ -484,13 +435,27 @@ function renderUI() {
   }
 
   // Logic dots
-  const sell_block = price > 15 && yli >= 2000;
+  const sell_block = price !== null && price > 15 && yli >= 2000;
   const cheap      = price !== null && price < 10;
   const solar_ok   = on ? yli >= 500 : yli >= 3000;
   setDot('dot-safe',  'lbl-safe',  safety_ok,   'Turvaehto OK (kulutus &lt; 16 kW)');
   setDot('dot-cheap', 'lbl-cheap', cheap,        'Halpa sähkö (&lt; 10 snt)');
   setDot('dot-solar', 'lbl-solar', solar_ok,     on ? 'Aurinkoylianto ≥ 500 W (päällä)' : 'Aurinkoylianto ≥ 3000 W (kytkentä)');
   setDot('dot-sell',  'lbl-sell',  sell_block,   'Myyntiehto aktiivinen (estää LVV)', true);
+
+  // Live reading values + bars
+  const solarColor = yli === null ? '#3a4555' : yli < 500 ? '#3a4555' : yli < 2000 ? '#f0a500' : '#00d4aa';
+  const loadColor  = kul  === null ? '#00d4aa' : kul < 10000 ? '#00d4aa' : kul < 16000 ? '#f0a500' : '#e03c3c';
+
+  document.getElementById('solarVal').textContent = yli !== null ? yli.toLocaleString('fi-FI') : '—';
+  document.getElementById('solarVal').style.color = solarColor;
+  document.getElementById('solarBar').style.width = yli !== null ? Math.min(yli / 10000 * 100, 100) + '%' : '0%';
+  document.getElementById('solarBar').style.background = solarColor;
+
+  document.getElementById('loadVal').textContent = kul !== null ? kul.toLocaleString('fi-FI') : '—';
+  document.getElementById('loadVal').style.color = loadColor;
+  document.getElementById('loadBar').style.width = kul !== null ? Math.min(kul / 25000 * 100, 100) + '%' : '0%';
+  document.getElementById('loadBar').style.background = loadColor;
 
   // Gauges
   buildGauge('solarGauge', yli, 10000, 'W', ['0','2k','4k','6k','8k','10k'],
