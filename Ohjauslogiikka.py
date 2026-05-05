@@ -21,8 +21,8 @@ CG340.close_port_after_each_call = True
 
 def kulutus():          # positiiviset luvut kertovat paljonko verkosta ostetaan sähköä ja negatiiviset
     try:                # paljonko myydään verkkoon eli paneelien ylituotto on negatiivinen kulutus
-        return CG340.read_register(40, 4, True, minimalmodbus.BYTEORDER_LITTLE_SWAP) #40001 address Carlo gavazzi em340 kulutusmittarilla kertoo systeemin w
-    except Exception as e:                                                          
+        return CG340.read_register(40, 4, True, minimalmodbus.BYTEORDER_LITTLE_SWAP) #40041 address Carlo gavazzi em340
+    except Exception as e:                                                           #kulutusmittarilla kertoo systeemin w
         print(f"Virhe kulutuksen luvussa: {e}")
         return None
 
